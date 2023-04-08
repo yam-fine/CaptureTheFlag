@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour {
     private Vector3 movementDirection;
 
     private CaptureTheFlag controls;
-
     private void Awake() {
         controller = GetComponent<CharacterController>();
 
