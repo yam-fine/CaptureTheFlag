@@ -7,24 +7,35 @@ using UnityEngine.AI;
 
 public class NPCMovement : MonoBehaviour
 {
-    [SerializeField] private float _speed = 0.5f;
+    private float _speed = 0.5f;
     [SerializeField] private float _rotationSpeed = 0.5f;
     [SerializeField] private float _minDistance = 1.5f;
+    [SerializeField] float detectionRadius = 5f; // from where will the AI go faster
+    [SerializeField] float speedMultiplier = 2;
 
     private NavMeshAgent _navMeshAgent;
-    
+    Transform player;
+
     public enum MovementType { costume, navmesh };
 
     public MovementType movementType = MovementType.costume;
 
-    private void Awake()
+    private void Start()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        _speed = _navMeshAgent.speed;
+        player = PlayerMovement.Instance.transform;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Vector3.Distance(transform.position, player.position) <= detectionRadius) {
+            _navMeshAgent.speed = _speed * speedMultiplier;
+        }
+        else {
+            _navMeshAgent.speed = _speed;
+        }
         switch (movementType)
         {
             case MovementType.costume:
@@ -39,7 +50,7 @@ public class NPCMovement : MonoBehaviour
 
     private void CostumeMovement()
     {
-        var goal = GameManager.Instance.Player.transform.position;
+        var goal = player.position;
         Vector3 realGoal = new Vector3(goal.x, transform.position.y, goal.z);
         Vector3 direction = realGoal - transform.position;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), _rotationSpeed);

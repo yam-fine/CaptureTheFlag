@@ -11,7 +11,12 @@ public class PlayerMovement : MonoBehaviour {
     private Vector3 velocity;
     private bool isGrounded;
     private Vector2 movementInput;
-    private Vector3 movementDirection;
+    //private Vector3 movementDirection;
+    static PlayerMovement instance;
+    public static PlayerMovement Instance { get {
+            if (instance == null) instance = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+            return instance;
+        } }
 
     private CaptureTheFlag controls;
     private void Awake() {
