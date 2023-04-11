@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +8,8 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] Transform FlagPos;
+    [SerializeField] float invincibilityTime = 0.5f;
 
     private CharacterController controller;
     private Vector3 velocity;
@@ -14,6 +18,8 @@ public class PlayerMovement : MonoBehaviour {
     //private Vector3 movementDirection;
     static PlayerMovement instance;
     Animator anim;
+    Flag flag;
+    bool holdingFlag = false; // THISSSSSSSSSSS
 
     public static PlayerMovement Instance { get {
             if (instance == null) instance = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
@@ -31,6 +37,10 @@ public class PlayerMovement : MonoBehaviour {
         controls.Player.Movement.canceled += _ => movementInput = Vector2.zero;
         controls.Player.Jump.performed += _ => Jump();
         anim = GetComponentInChildren<Animator>();
+    }
+
+    private void Start() {
+        flag = GameManager.Instance.Flag.GetComponent<Flag>();
     }
 
     private void OnEnable() {
@@ -82,6 +92,30 @@ public class PlayerMovement : MonoBehaviour {
     private void Jump() {
         if (isGrounded) {
             velocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+
+    IEnumerator Invincibility() {
+        controls.Disable();
+        yield return new WaitForSeconds(invincibilityTime);
+        controls.Enable();
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.CompareTag("Player") && !holdingFlag) {
+            flag.CaptureFlag(FlagPos);
+            holdingFlag = true;
+        }
+        else if (collision.gameObject.CompareTag("Player")) {
+            holdingFlag = false;
+            StartCoroutine(Invincibility());
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Flag")) {
+            flag.CaptureFlag(FlagPos);
+            holdingFlag = true;
         }
     }
 }
