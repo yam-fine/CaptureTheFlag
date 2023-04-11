@@ -13,12 +13,15 @@ public class PlayerMovement : MonoBehaviour {
     private Vector2 movementInput;
     //private Vector3 movementDirection;
     static PlayerMovement instance;
+    Animator anim;
+
     public static PlayerMovement Instance { get {
             if (instance == null) instance = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
             return instance;
         } }
 
     private CaptureTheFlag controls;
+
     private void Awake() {
         controller = GetComponent<CharacterController>();
 
@@ -27,6 +30,7 @@ public class PlayerMovement : MonoBehaviour {
         controls.Player.Movement.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
         controls.Player.Movement.canceled += _ => movementInput = Vector2.zero;
         controls.Player.Jump.performed += _ => Jump();
+        anim = GetComponentInChildren<Animator>();
     }
 
     private void OnEnable() {
@@ -64,6 +68,10 @@ public class PlayerMovement : MonoBehaviour {
         if (moveDirection.magnitude > 0.1f) {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            anim.SetTrigger("RUN");
+        }
+        else {
+            anim.SetTrigger("IDLE");
         }
 
         // Move the character

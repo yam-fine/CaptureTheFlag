@@ -15,16 +15,18 @@ public class NPCMovement : MonoBehaviour
 
     private NavMeshAgent _navMeshAgent;
     Transform player;
+    Animator anim;
 
     public enum MovementType { costume, navmesh };
 
     public MovementType movementType = MovementType.costume;
 
-    private void Start()
+    private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _speed = _navMeshAgent.speed;
         player = PlayerMovement.Instance.transform;
+        anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -32,10 +34,13 @@ public class NPCMovement : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, player.position) <= detectionRadius) {
             _navMeshAgent.speed = _speed * speedMultiplier;
+            anim.SetTrigger("RUN");
         }
         else {
             _navMeshAgent.speed = _speed;
+            anim.SetTrigger("WALK");
         }
+
         switch (movementType)
         {
             case MovementType.costume:
