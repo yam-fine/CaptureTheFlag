@@ -18,7 +18,7 @@ public class NPCMovement : MonoBehaviour
     Transform player;
     Animator anim;
 
-    public enum MovementType { costume, navmesh };
+    public enum MovementType { costume, navmesh, noMove };
 
     public MovementType movementType = MovementType.costume;
 
@@ -49,6 +49,8 @@ public class NPCMovement : MonoBehaviour
                 break;
             case MovementType.navmesh:
                 NavMeshMovement();
+                break;
+            case MovementType.noMove:
                 break;
         }
     }

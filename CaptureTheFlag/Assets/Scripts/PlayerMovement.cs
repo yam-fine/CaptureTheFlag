@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,8 +10,6 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float rotationSpeed;
-    [SerializeField] Transform FlagPos;
-    [SerializeField] float invincibilityTime = 0.5f;
 
     private CharacterController controller;
     private Vector3 velocity;
@@ -18,8 +18,7 @@ public class PlayerMovement : MonoBehaviour {
     //private Vector3 movementDirection;
     static PlayerMovement instance;
     Animator anim;
-    Flag flag;
-    bool holdingFlag = false; // THISSSSSSSSSSS
+    
 
     public static PlayerMovement Instance { get {
             if (instance == null) instance = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
@@ -40,7 +39,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Start() {
-        flag = GameManager.Instance.Flag.GetComponent<Flag>();
+       
     }
 
     private void OnEnable() {
@@ -94,28 +93,11 @@ public class PlayerMovement : MonoBehaviour {
             velocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
+    
 
-    IEnumerator Invincibility() {
-        controls.Disable();
-        yield return new WaitForSeconds(invincibilityTime);
-        controls.Enable();
+    public void EnableControls(bool enable)
+    {
+        (enable ? (Action)controls.Enable : (Action)controls.Disable)();
     }
-
-    private void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.CompareTag("Player") && !holdingFlag) {
-            flag.CaptureFlag(FlagPos);
-            holdingFlag = true;
-        }
-        else if (collision.gameObject.CompareTag("Player")) {
-            holdingFlag = false;
-            StartCoroutine(Invincibility());
-        }
-    }
-
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Flag")) {
-            flag.CaptureFlag(FlagPos);
-            holdingFlag = true;
-        }
-    }
+    
 }

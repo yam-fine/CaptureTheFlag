@@ -5,6 +5,8 @@ using Utils;
 public class GameManager : Singleton<GameManager>
 {
     public GameObject Flag;
+    public ControlledPlayer controlledPlayer;
+    public NpcPlayer npcPlayer;
 
     void Start()
     {
