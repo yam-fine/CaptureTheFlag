@@ -14,10 +14,10 @@ public class NPCMovement : MonoBehaviour
     [SerializeField] float speedMultiplier = 2;
 
     private NavMeshAgent _navMeshAgent;
-    Transform player;
+    GameObject player;
     Animator anim;
-
-    public Transform target;
+    
+    [HideInInspector]public GameObject target;
 
     public enum MovementType { costume, navmesh, noMove };
 
@@ -32,14 +32,14 @@ public class NPCMovement : MonoBehaviour
 
     private void Start()
     {
-        player = GameManager.Instance.controlledPlayer.transform;
+        player = GameManager.Instance.controlledPlayer.gameObject;
         target = player;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(transform.position, player.position) <= detectionRadius) {
+        if (Vector3.Distance(transform.position, player.transform.position) <= detectionRadius) {
             _navMeshAgent.speed = _speed * speedMultiplier;
             anim.SetTrigger("RUN");
         }
@@ -64,7 +64,7 @@ public class NPCMovement : MonoBehaviour
 
     private void CostumeMovement()
     {
-        var goal = player.position;
+        var goal = player.transform.position;
         Vector3 realGoal = new Vector3(goal.x, transform.position.y, goal.z);
         Vector3 direction = realGoal - transform.position;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), _rotationSpeed);
@@ -83,6 +83,6 @@ public class NPCMovement : MonoBehaviour
     private void NavMeshMovement()
     {
         
-        _navMeshAgent.SetDestination(target.position);
+        _navMeshAgent.SetDestination(target.transform.position);
     }
 }

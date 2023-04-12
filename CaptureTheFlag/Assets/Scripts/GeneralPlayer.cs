@@ -8,13 +8,13 @@ using Utils;
 public class GeneralPlayer : MonoBehaviour
 {
     private Flag flag;
-    private Transform flagPos;
+    private GameObject flagPos;
     private bool holdingFlag;
     public bool HoldingFlag
     {
         get { return holdingFlag; }
     }
-    [SerializeField] protected float invincibilityTime = 0.5f;
+    [SerializeField] protected float invincibilityTime = 2f;
 
     protected virtual void Awake()
     {
@@ -23,7 +23,7 @@ public class GeneralPlayer : MonoBehaviour
 
     protected virtual void Start() {
         flag = GameManager.Instance.Flag.GetComponent<Flag>();
-        flagPos = UtilFunctions.SearchForObjectInHierarchy(transform, "FlagPos").transform;
+        flagPos = UtilFunctions.SearchForObjectInHierarchy(transform, "FlagPos");
 
     }
     private void OnCollisionEnter(Collision collision) {
@@ -50,7 +50,7 @@ public class GeneralPlayer : MonoBehaviour
 
     protected virtual void CaptureFlag()
     {
-        flag.CaptureFlag(flagPos);
+        flag.CaptureFlag(flagPos.transform);
         holdingFlag = true;
     }
 }
