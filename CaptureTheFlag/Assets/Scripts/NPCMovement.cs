@@ -25,8 +25,12 @@ public class NPCMovement : MonoBehaviour
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _speed = _navMeshAgent.speed;
-        player = PlayerMovement.Instance.transform;
         anim = GetComponentInChildren<Animator>();
+    }
+
+    private void Start()
+    {
+        player = GameManager.Instance.controlledPlayer.transform;
     }
 
     // Update is called once per frame

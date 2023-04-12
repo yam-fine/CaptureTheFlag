@@ -9,7 +9,7 @@ public class ControlledPlayer : GeneralPlayer
     protected override void Awake()
     {
         base.Awake();
-        movement.GetComponent<PlayerMovement>();
+        movement = GetComponent<PlayerMovement>();
     }
 
     protected override IEnumerator Invincibility() {

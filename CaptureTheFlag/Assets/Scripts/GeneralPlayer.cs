@@ -17,7 +17,7 @@ public class GeneralPlayer : MonoBehaviour
 
     protected virtual void Awake()
     {
-        throw new NotImplementedException();
+       
     }
 
     protected virtual void Start() {
