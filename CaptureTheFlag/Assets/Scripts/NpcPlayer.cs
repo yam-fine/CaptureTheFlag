@@ -5,6 +5,7 @@ using UnityEngine;
 public class NpcPlayer : GeneralPlayer
 {
     private NPCMovement movement;
+    [SerializeField] private Transform goal;
     protected override void Start()
     {
         base.Start();
@@ -13,9 +14,16 @@ public class NpcPlayer : GeneralPlayer
 
     }
 
+    protected override void CaptureFlag()
+    {
+        base.CaptureFlag();
+        movement.target = goal;
+    }
+
     protected override IEnumerator Invincibility()
     {
         NPCMovement.MovementType initialMovementType = movement.movementType;
+        movement.target = GameManager.Instance.controlledPlayer.transform;
         movement.movementType = NPCMovement.MovementType.noMove;
         yield return new WaitForSeconds(invincibilityTime);
         movement.movementType = initialMovementType;

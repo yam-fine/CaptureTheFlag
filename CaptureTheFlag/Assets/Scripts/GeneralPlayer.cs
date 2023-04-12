@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling.Memory.Experimental;
 using Utils;
 
 public class GeneralPlayer : MonoBehaviour
@@ -27,8 +28,8 @@ public class GeneralPlayer : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag("Player") && !holdingFlag) {
-            flag.CaptureFlag(flagPos);
-            holdingFlag = true;
+            Debug.Log("HOLD");
+            CaptureFlag();
         }
         else if (collision.gameObject.CompareTag("Player")) {
             holdingFlag = false;
@@ -38,13 +39,18 @@ public class GeneralPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Flag")) {
-            flag.CaptureFlag(flagPos);
-            holdingFlag = true;
+            CaptureFlag();
         }
     }
     
     protected virtual IEnumerator Invincibility()
     {
         throw new Exception("Override this function");
+    }
+
+    protected virtual void CaptureFlag()
+    {
+        flag.CaptureFlag(flagPos);
+        holdingFlag = true;
     }
 }

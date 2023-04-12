@@ -17,6 +17,8 @@ public class NPCMovement : MonoBehaviour
     Transform player;
     Animator anim;
 
+    public Transform target;
+
     public enum MovementType { costume, navmesh, noMove };
 
     public MovementType movementType = MovementType.costume;
@@ -31,6 +33,7 @@ public class NPCMovement : MonoBehaviour
     private void Start()
     {
         player = GameManager.Instance.controlledPlayer.transform;
+        target = player;
     }
 
     // Update is called once per frame
@@ -79,6 +82,7 @@ public class NPCMovement : MonoBehaviour
     }
     private void NavMeshMovement()
     {
-        _navMeshAgent.SetDestination(player.transform.position);
+        
+        _navMeshAgent.SetDestination(target.position);
     }
 }
