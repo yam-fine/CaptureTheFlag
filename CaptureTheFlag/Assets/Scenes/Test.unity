@@ -504,7 +504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   invincibilityTime: 0.5
-  goal: {fileID: 0}
+  goal: {fileID: 2411509976166426866}
 --- !u!54 &395295928
 Rigidbody:
   m_ObjectHideFlags: 0
