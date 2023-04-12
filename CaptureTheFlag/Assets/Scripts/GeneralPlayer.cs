@@ -14,8 +14,12 @@ public class GeneralPlayer : MonoBehaviour
     {
         get { return holdingFlag; }
     }
-    protected float invincibilityTime = 2f;
-    protected bool invincible = false;
+
+    protected bool Invincible { get => invincible; set => invincible = value; }
+
+    protected float invincibilityTime = 1f;
+    private bool invincible = false;
+    private bool canPickup = true;
 
     protected virtual void Awake()
     {
@@ -27,20 +31,20 @@ public class GeneralPlayer : MonoBehaviour
         flagPos = UtilFunctions.SearchForObjectInHierarchy(transform, "FlagPos");
 
     }
-    private void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.CompareTag("Player") && !holdingFlag && !invincible && flag.PickedUp) {
-            Debug.Log("HOLD");
-            CaptureFlag();
-        }
-        else if (collision.gameObject.CompareTag("Player") && holdingFlag) {
-            holdingFlag = false;
-            StartCoroutine(Invincibility());
-        }
-    }
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Flag")) {
             CaptureFlag();
+        }
+        if (other.gameObject.CompareTag("Player")) {
+            if (!holdingFlag && !Invincible && flag.PickedUp) { // the other player has the flag
+                Debug.Log(gameObject.name + " is taking the flag");
+                CaptureFlag();
+            }
+            else if (holdingFlag && !other.GetComponent<GeneralPlayer>().Invincible) { // we have the flag
+                holdingFlag = false;
+                StartCoroutine(Invincibility());
+            }
         }
     }
     
@@ -51,7 +55,13 @@ public class GeneralPlayer : MonoBehaviour
 
     protected virtual void CaptureFlag()
     {
-        flag.CaptureFlag(flagPos.transform);
-        holdingFlag = true;
+            holdingFlag = true;
+            flag.CaptureFlag(flagPos.transform);
+    }
+
+    IEnumerator PickupCooldown() {
+        canPickup = false;
+        yield return new WaitForSeconds(1);
+        canPickup = true;
     }
 }

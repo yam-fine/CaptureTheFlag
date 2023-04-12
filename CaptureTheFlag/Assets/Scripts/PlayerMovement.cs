@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour {
     [SerializeField] private float speed = 5f;
-    [SerializeField] private float jumpHeight = 2f;
+    //[SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float rotationSpeed;
 
@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour {
             controller.Move(movement);
         }
         else {
-            velocity.y = gravity * Time.deltaTime * 0.1f;
+            velocity.y = gravity * Time.deltaTime * 0.3f;
             controller.Move(movement + velocity);
         }
 

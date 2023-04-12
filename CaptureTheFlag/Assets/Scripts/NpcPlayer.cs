@@ -22,12 +22,12 @@ public class NpcPlayer : GeneralPlayer
 
     protected override IEnumerator Invincibility()
     {
-        invincible = true;
+        Invincible = true;
         NPCMovement.MovementType initialMovementType = movement.movementType;
         movement.Target = GameManager.Instance.controlledPlayer.gameObject;
         movement.movementType = NPCMovement.MovementType.noMove;
         yield return new WaitForSeconds(invincibilityTime);
         movement.movementType = initialMovementType;
-        invincible = false;
+        Invincible = false;
     }
 }

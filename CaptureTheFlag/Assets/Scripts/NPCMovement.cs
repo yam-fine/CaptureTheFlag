@@ -64,7 +64,6 @@ public class NPCMovement : MonoBehaviour
         }
     }
 
-
     private void CostumeMovement()
     {
         var goal = player.transform.position;
@@ -83,9 +82,9 @@ public class NPCMovement : MonoBehaviour
             // Animator set enum to "close" 
         }
     }
+
     private void NavMeshMovement()
     {
-        Debug.Log(target.transform.position);
         _navMeshAgent.SetDestination(Target.transform.position);
     }
 }

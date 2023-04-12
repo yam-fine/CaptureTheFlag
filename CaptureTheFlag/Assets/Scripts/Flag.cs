@@ -17,6 +17,7 @@ public class Flag : MonoBehaviour
     }
 
     public void CaptureFlag(Transform flagPos) {
+        
         pickedUp = true;
         col.enabled = false;
         transform.parent = flagPos;
