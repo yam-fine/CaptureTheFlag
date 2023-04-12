@@ -13,7 +13,6 @@ public class PlayerMovement : MonoBehaviour {
 
     private CharacterController controller;
     private Vector3 velocity;
-    private bool isGrounded;
     private Vector2 movementInput;
     //private Vector3 movementDirection;
     static PlayerMovement instance;
@@ -34,7 +33,7 @@ public class PlayerMovement : MonoBehaviour {
         controls = new CaptureTheFlag();
         controls.Player.Movement.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
         controls.Player.Movement.canceled += _ => movementInput = Vector2.zero;
-        controls.Player.Jump.performed += _ => Jump();
+        //controls.Player.Jump.performed += _ => Jump();
         anim = GetComponentInChildren<Animator>();
     }
 
@@ -51,16 +50,6 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Update() {
-        // Check if the character is grounded
-        isGrounded = controller.isGrounded;
-
-        // Apply gravity
-        if (isGrounded && velocity.y < 0) {
-            velocity.y = 0f;
-        }
-
-        velocity.y += gravity * Time.deltaTime;
-
         Move();
     }
 
@@ -85,14 +74,24 @@ public class PlayerMovement : MonoBehaviour {
 
         // Move the character
         Vector3 movement = moveDirection * speed * Time.deltaTime;
-        controller.Move(movement);
+
+        // Apply gravity
+        if (controller.isGrounded) {
+            velocity = Vector3.zero;
+            controller.Move(movement);
+        }
+        else {
+            velocity.y = gravity * Time.deltaTime * 0.1f;
+            controller.Move(movement + velocity);
+        }
+
     }
 
-    private void Jump() {
-        if (isGrounded) {
+    /*private void Jump() {
+        if (controller.isGrounded) {
             velocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-    }
+    }*/
     
 
     public void EnableControls(bool enable)

@@ -7,14 +7,15 @@ using Utils;
 
 public class GeneralPlayer : MonoBehaviour
 {
-    private Flag flag;
+    protected Flag flag;
     private GameObject flagPos;
-    private bool holdingFlag;
+    protected bool holdingFlag;
     public bool HoldingFlag
     {
         get { return holdingFlag; }
     }
-    [SerializeField] protected float invincibilityTime = 2f;
+    protected float invincibilityTime = 2f;
+    protected bool invincible = false;
 
     protected virtual void Awake()
     {
@@ -27,11 +28,11 @@ public class GeneralPlayer : MonoBehaviour
 
     }
     private void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.CompareTag("Player") && !holdingFlag) {
+        if (collision.gameObject.CompareTag("Player") && !holdingFlag && !invincible && flag.PickedUp) {
             Debug.Log("HOLD");
             CaptureFlag();
         }
-        else if (collision.gameObject.CompareTag("Player")) {
+        else if (collision.gameObject.CompareTag("Player") && holdingFlag) {
             holdingFlag = false;
             StartCoroutine(Invincibility());
         }

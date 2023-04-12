@@ -8,6 +8,8 @@ public class Flag : MonoBehaviour
     bool pickedUp = false;
     BoxCollider col;
 
+    public bool PickedUp { get => pickedUp;}
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,12 +20,15 @@ public class Flag : MonoBehaviour
         pickedUp = true;
         col.enabled = false;
         transform.parent = flagPos;
+        transform.position = flagPos.position;
+        transform.rotation = flagPos.rotation;
     }
 
     public void Goal() {
         pickedUp = false;
         transform.parent = null;
         transform.position = initPos.position;
+        transform.rotation = initPos.rotation;
         col.enabled = true;
     }
 }

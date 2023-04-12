@@ -17,15 +17,17 @@ public class NpcPlayer : GeneralPlayer
     protected override void CaptureFlag()
     {
         base.CaptureFlag();
-        movement.target = goal.gameObject;
+        movement.Target = goal.gameObject;
     }
 
     protected override IEnumerator Invincibility()
     {
+        invincible = true;
         NPCMovement.MovementType initialMovementType = movement.movementType;
-        movement.target = GameManager.Instance.controlledPlayer.gameObject;
+        movement.Target = GameManager.Instance.controlledPlayer.gameObject;
         movement.movementType = NPCMovement.MovementType.noMove;
         yield return new WaitForSeconds(invincibilityTime);
         movement.movementType = initialMovementType;
+        invincible = false;
     }
 }

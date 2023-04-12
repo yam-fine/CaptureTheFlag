@@ -13,8 +13,21 @@ public class ControlledPlayer : GeneralPlayer
     }
 
     protected override IEnumerator Invincibility() {
+        invincible = true;
         movement.EnableControls(false);
         yield return new WaitForSeconds(invincibilityTime);
         movement.EnableControls(true);
+        invincible = false;
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit collision) {
+        if (collision.gameObject.CompareTag("Player") && !holdingFlag && !invincible && flag.PickedUp) {
+            Debug.Log("HOLD");
+            CaptureFlag();
+        }
+        else if (collision.gameObject.CompareTag("Player") && holdingFlag) {
+            holdingFlag = false;
+            StartCoroutine(Invincibility());
+        }
     }
 }

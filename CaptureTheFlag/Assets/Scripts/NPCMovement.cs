@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 public class NPCMovement : MonoBehaviour
 {
-    private float _speed = 0.5f;
+    [SerializeField] float _speed = 0.5f;
     [SerializeField] private float _rotationSpeed = 0.5f;
     [SerializeField] private float _minDistance = 1.5f;
     [SerializeField] float detectionRadius = 5f; // from where will the AI go faster
@@ -17,11 +17,13 @@ public class NPCMovement : MonoBehaviour
     GameObject player;
     Animator anim;
     
-    [HideInInspector]public GameObject target;
+    GameObject target;
 
     public enum MovementType { costume, navmesh, noMove };
 
     public MovementType movementType = MovementType.costume;
+
+    public GameObject Target { get => target; set { target = value; } }
 
     private void Awake()
     {
@@ -33,21 +35,12 @@ public class NPCMovement : MonoBehaviour
     private void Start()
     {
         player = GameManager.Instance.controlledPlayer.gameObject;
-        target = player;
+        Target = player;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(transform.position, player.transform.position) <= detectionRadius) {
-            _navMeshAgent.speed = _speed * speedMultiplier;
-            anim.SetTrigger("RUN");
-        }
-        else {
-            _navMeshAgent.speed = _speed;
-            anim.SetTrigger("WALK");
-        }
-
         switch (movementType)
         {
             case MovementType.costume:
@@ -57,7 +50,17 @@ public class NPCMovement : MonoBehaviour
                 NavMeshMovement();
                 break;
             case MovementType.noMove:
-                break;
+                anim.SetTrigger("IDLE");
+                return;
+        }
+
+        if (Vector3.Distance(transform.position, player.transform.position) <= detectionRadius) {
+            _navMeshAgent.speed = _speed * speedMultiplier;
+            anim.SetTrigger("RUN");
+        }
+        else {
+            _navMeshAgent.speed = _speed;
+            anim.SetTrigger("WALK");
         }
     }
 
@@ -82,7 +85,7 @@ public class NPCMovement : MonoBehaviour
     }
     private void NavMeshMovement()
     {
-        
-        _navMeshAgent.SetDestination(target.transform.position);
+        Debug.Log(target.transform.position);
+        _navMeshAgent.SetDestination(Target.transform.position);
     }
 }
