@@ -12,7 +12,6 @@ public class NPCMovement : MonoBehaviour
     [SerializeField] private float _minDistance = 1.5f;
     [SerializeField] float detectionRadius = 5f; // from where will the AI go faster
     [SerializeField] float speedMultiplier = 2;
-    [SerializeField] Transform FlagPos;
 
     private NavMeshAgent _navMeshAgent;
     Transform player;
