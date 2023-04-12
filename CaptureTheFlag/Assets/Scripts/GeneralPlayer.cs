@@ -58,10 +58,4 @@ public class GeneralPlayer : MonoBehaviour
             holdingFlag = true;
             flag.CaptureFlag(flagPos.transform);
     }
-
-    IEnumerator PickupCooldown() {
-        canPickup = false;
-        yield return new WaitForSeconds(1);
-        canPickup = true;
-    }
 }
