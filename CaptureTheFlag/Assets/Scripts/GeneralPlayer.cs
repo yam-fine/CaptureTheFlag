@@ -10,6 +10,20 @@ public class GeneralPlayer : MonoBehaviour
     protected Flag flag;
     private GameObject flagPos;
     protected bool holdingFlag;
+    private GameMenuManager.Side scoreSide;
+    public GameMenuManager.Side ScoreSide
+    {
+        get => scoreSide;
+        set => scoreSide = value;
+    }
+
+    private Vector3 startPos;
+    [SerializeField] private GameObject goal; 
+    public GameObject Goal
+    {
+        get { return goal; }
+    }
+
     public bool HoldingFlag
     {
         get { return holdingFlag; }
@@ -23,7 +37,7 @@ public class GeneralPlayer : MonoBehaviour
 
     protected virtual void Awake()
     {
-       
+        startPos = transform.position;
     }
 
     protected virtual void Start() {
@@ -57,5 +71,13 @@ public class GeneralPlayer : MonoBehaviour
     {
             holdingFlag = true;
             flag.CaptureFlag(flagPos.transform);
+    }
+
+    public virtual void ScoreFlag()
+    {
+        transform.position = startPos;
+        holdingFlag = false;
+        if(holdingFlag)
+            GameManager.Instance.UpdateScore(scoreSide);
     }
 }

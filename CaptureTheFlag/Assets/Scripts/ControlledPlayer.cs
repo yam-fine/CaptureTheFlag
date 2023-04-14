@@ -10,6 +10,8 @@ public class ControlledPlayer : GeneralPlayer
     {
         base.Awake();
         movement = GetComponent<PlayerMovement>();
+        ScoreSide = GameMenuManager.Side.Right;
+
     }
 
     protected override IEnumerator Invincibility() {

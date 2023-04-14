@@ -5,11 +5,13 @@ using UnityEngine;
 public class NpcPlayer : GeneralPlayer
 {
     private NPCMovement movement;
-    [SerializeField] private Transform goal;
+    
     protected override void Start()
     {
         base.Start();
         movement = GetComponent<NPCMovement>();
+        ScoreSide = GameMenuManager.Side.Left;
+        movement.Target = flag.gameObject;
 
 
     }
@@ -17,7 +19,7 @@ public class NpcPlayer : GeneralPlayer
     protected override void CaptureFlag()
     {
         base.CaptureFlag();
-        movement.Target = goal.gameObject;
+        movement.Target = Goal;
     }
 
     protected override IEnumerator Invincibility()
@@ -29,5 +31,11 @@ public class NpcPlayer : GeneralPlayer
         yield return new WaitForSeconds(invincibilityTime);
         movement.movementType = initialMovementType;
         Invincible = false;
+    }
+
+    public override void ScoreFlag()
+    {
+        base.ScoreFlag();
+        movement.Target = flag.gameObject;
     }
 }

@@ -8,14 +8,8 @@ public class GameManager : Singleton<GameManager>
     public ControlledPlayer controlledPlayer;
     public NpcPlayer npcPlayer;
 
-    void Start()
+    public void UpdateScore(GameMenuManager.Side sideToUpdate)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        GameMenuManager.Instance.UpdateScore(1, sideToUpdate);
     }
 }
