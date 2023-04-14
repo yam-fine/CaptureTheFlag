@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Flag
+  - Goal1
+  - Goal2
   layers:
   - Default
   - TransparentFX
