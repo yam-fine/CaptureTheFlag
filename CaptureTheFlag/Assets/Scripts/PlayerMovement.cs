@@ -66,10 +66,10 @@ public class PlayerMovement : MonoBehaviour {
         if (moveDirection.magnitude > 0.1f) {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-            anim.SetTrigger("RUN");
+            anim.SetFloat("Speed", 2);
         }
         else {
-            anim.SetTrigger("IDLE");
+            anim.SetFloat("Speed", 0);
         }
 
         // Move the character

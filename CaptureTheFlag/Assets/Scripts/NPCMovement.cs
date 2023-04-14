@@ -50,17 +50,17 @@ public class NPCMovement : MonoBehaviour
                 NavMeshMovement();
                 break;
             case MovementType.noMove:
-                anim.SetTrigger("IDLE");
+                anim.SetFloat("Speed", 0);
                 return;
         }
 
         if (Vector3.Distance(transform.position, player.transform.position) <= detectionRadius) {
             _navMeshAgent.speed = _speed * speedMultiplier;
-            anim.SetTrigger("RUN");
+            anim.SetFloat("Speed", 2);
         }
         else {
             _navMeshAgent.speed = _speed;
-            anim.SetTrigger("WALK");
+            anim.SetFloat("Speed", 1);
         }
     }
 
