@@ -75,9 +75,11 @@ public class GeneralPlayer : MonoBehaviour
 
     public virtual void ScoreFlag()
     {
+        StartCoroutine(Invincibility());
         transform.position = startPos;
-        holdingFlag = false;
         if(holdingFlag)
             GameManager.Instance.UpdateScore(scoreSide);
+        holdingFlag = false;
+
     }
 }

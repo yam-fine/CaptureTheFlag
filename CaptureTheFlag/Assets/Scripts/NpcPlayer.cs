@@ -5,7 +5,9 @@ using UnityEngine;
 public class NpcPlayer : GeneralPlayer
 {
     private NPCMovement movement;
-    
+    [SerializeField] private float _runToGoalSpeed = 2f;
+    [SerializeField] private float _runToPlayerSpeed = 3f;
+
     protected override void Start()
     {
         base.Start();
@@ -20,6 +22,7 @@ public class NpcPlayer : GeneralPlayer
     {
         base.CaptureFlag();
         movement.Target = Goal;
+        movement.Speed = _runToGoalSpeed;
     }
 
     protected override IEnumerator Invincibility()
@@ -27,6 +30,7 @@ public class NpcPlayer : GeneralPlayer
         Invincible = true;
         NPCMovement.MovementType initialMovementType = movement.movementType;
         movement.Target = GameManager.Instance.controlledPlayer.gameObject;
+        movement.Speed = _runToPlayerSpeed;
         movement.movementType = NPCMovement.MovementType.noMove;
         yield return new WaitForSeconds(invincibilityTime);
         movement.movementType = initialMovementType;
@@ -37,5 +41,7 @@ public class NpcPlayer : GeneralPlayer
     {
         base.ScoreFlag();
         movement.Target = flag.gameObject;
+        movement.Speed = _runToPlayerSpeed;
     }
+    
 }

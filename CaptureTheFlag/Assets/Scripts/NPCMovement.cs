@@ -7,11 +7,17 @@ using UnityEngine.AI;
 
 public class NPCMovement : MonoBehaviour
 {
-    [SerializeField] float _speed = 0.5f;
+    [SerializeField] float _speed = 2f;
     [SerializeField] private float _rotationSpeed = 0.5f;
     [SerializeField] private float _minDistance = 1.5f;
     [SerializeField] float detectionRadius = 5f; // from where will the AI go faster
     [SerializeField] float speedMultiplier = 2;
+    
+    public float Speed
+    {
+        get { return _speed; }
+        set { _speed = value; }
+    }
 
     private NavMeshAgent _navMeshAgent;
     GameObject player;
@@ -41,6 +47,9 @@ public class NPCMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       _navMeshAgent.isStopped = false;
+
+
         switch (movementType)
         {
             case MovementType.costume:
@@ -51,6 +60,7 @@ public class NPCMovement : MonoBehaviour
                 break;
             case MovementType.noMove:
                 anim.SetFloat("Speed", 0);
+                _navMeshAgent.isStopped = true;
                 return;
         }
 
@@ -87,4 +97,6 @@ public class NPCMovement : MonoBehaviour
     {
         _navMeshAgent.SetDestination(Target.transform.position);
     }
+    
+    
 }

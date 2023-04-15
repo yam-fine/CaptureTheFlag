@@ -16225,7 +16225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0acd2fa7ea59704f8c80a900b7e8ac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 0.5
+  _speed: 5
   _rotationSpeed: 0.5
   _minDistance: 1.5
   detectionRadius: 5
@@ -16266,6 +16266,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goal: {fileID: 1627272180}
+  _runToGoalSpeed: 3.5
+  _runToPlayerSpeed: 5
 --- !u!54 &395295928
 Rigidbody:
   m_ObjectHideFlags: 0
