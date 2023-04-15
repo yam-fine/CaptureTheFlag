@@ -10,13 +10,15 @@ public class PlayerMovement : MonoBehaviour {
     //[SerializeField] private float jumpHeight = 2f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float rotationSpeed;
-
     private CharacterController controller;
     private Vector3 velocity;
     private Vector2 movementInput;
     //private Vector3 movementDirection;
     static PlayerMovement instance;
     Animator anim;
+
+    private int isFallingdCounter = 0; // it is always alternating between true and false, if there is 3 in a row we can conclude its falling.
+    private Vector3 lastSeenPos;
     
 
     public static PlayerMovement Instance { get {
@@ -50,6 +52,21 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Update() {
+        if (controller.isGrounded)
+        {
+            isFallingdCounter = 0;
+            lastSeenPos = transform.position;
+        }
+        else
+        {
+            isFallingdCounter++;
+        }
+
+        if (isFallingdCounter >= 5)
+        {
+            transform.position = lastSeenPos;
+            isFallingdCounter = 0;
+        }
         Move();
     }
 
