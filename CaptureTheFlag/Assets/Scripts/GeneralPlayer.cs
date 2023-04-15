@@ -17,8 +17,10 @@ public class GeneralPlayer : MonoBehaviour
         set => scoreSide = value;
     }
 
-    private Vector3 startPos;
-    [SerializeField] private GameObject goal; 
+    protected Vector3 startPos;
+    [SerializeField] private GameObject goal;
+    [SerializeField] private AudioSource goalAudio;
+
     public GameObject Goal
     {
         get { return goal; }
@@ -76,10 +78,10 @@ public class GeneralPlayer : MonoBehaviour
     public virtual void ScoreFlag()
     {
         StartCoroutine(Invincibility());
-        transform.position = startPos;
-        if(holdingFlag)
+        if (holdingFlag) {
             GameManager.Instance.UpdateScore(scoreSide);
+            goalAudio.Play();
+        }
         holdingFlag = false;
-
     }
 }

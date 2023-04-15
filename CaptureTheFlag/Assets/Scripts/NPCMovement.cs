@@ -31,10 +31,12 @@ public class NPCMovement : MonoBehaviour
 
     public GameObject Target { get => target; set { target = value; } }
 
+    public NavMeshAgent MyNavMeshAgent { get => _navMeshAgent; set => _navMeshAgent = value; }
+
     private void Awake()
     {
-        _navMeshAgent = GetComponent<NavMeshAgent>();
-        _speed = _navMeshAgent.speed;
+        MyNavMeshAgent = GetComponent<NavMeshAgent>();
+        _speed = MyNavMeshAgent.speed;
         anim = GetComponentInChildren<Animator>();
     }
 
@@ -47,7 +49,7 @@ public class NPCMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       _navMeshAgent.isStopped = false;
+       MyNavMeshAgent.isStopped = false;
 
 
         switch (movementType)
@@ -60,16 +62,16 @@ public class NPCMovement : MonoBehaviour
                 break;
             case MovementType.noMove:
                 anim.SetFloat("Speed", 0);
-                _navMeshAgent.isStopped = true;
+                MyNavMeshAgent.isStopped = true;
                 return;
         }
 
         if (Vector3.Distance(transform.position, player.transform.position) <= detectionRadius) {
-            _navMeshAgent.speed = _speed * speedMultiplier;
+            MyNavMeshAgent.speed = _speed * speedMultiplier;
             anim.SetFloat("Speed", 2);
         }
         else {
-            _navMeshAgent.speed = _speed;
+            MyNavMeshAgent.speed = _speed;
             anim.SetFloat("Speed", 1);
         }
     }
@@ -95,7 +97,7 @@ public class NPCMovement : MonoBehaviour
 
     private void NavMeshMovement()
     {
-        _navMeshAgent.SetDestination(Target.transform.position);
+        MyNavMeshAgent.SetDestination(Target.transform.position);
     }
     
     

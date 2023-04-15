@@ -21,4 +21,9 @@ public class ControlledPlayer : GeneralPlayer
         movement.EnableControls(true);
         Invincible = false;
     }
+
+    public override void ScoreFlag() {
+        transform.position = startPos;
+        base.ScoreFlag();
+    }
 }

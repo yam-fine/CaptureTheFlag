@@ -39,9 +39,11 @@ public class NpcPlayer : GeneralPlayer
 
     public override void ScoreFlag()
     {
+        movement.MyNavMeshAgent.Warp(startPos);
         base.ScoreFlag();
         movement.Target = flag.gameObject;
         movement.Speed = _runToPlayerSpeed;
+        print("Hello");
     }
     
 }
