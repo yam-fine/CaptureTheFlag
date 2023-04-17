@@ -43,7 +43,6 @@ public class NpcPlayer : GeneralPlayer
         base.ScoreFlag();
         movement.Target = flag.gameObject;
         movement.Speed = _runToPlayerSpeed;
-        print("Hello");
     }
     
 }
