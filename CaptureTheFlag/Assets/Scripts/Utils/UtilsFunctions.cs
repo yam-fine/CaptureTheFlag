@@ -16,7 +16,6 @@ namespace Utils
             // If the object is found, do something with it
             if (flagPosObject != null)
             {
-                Debug.Log($"Found {nameOfGameObject}");
                 return flagPosObject;
             }
 

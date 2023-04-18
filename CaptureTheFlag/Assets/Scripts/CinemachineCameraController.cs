@@ -10,6 +10,7 @@ public class CinemachineCameraController : MonoBehaviour {
     private float currentX = 0f;
     private float currentY = 0f;
 
+
     private void LateUpdate() {
         // Update the camera rotation based on mouse input
         currentX += Input.GetAxis("Mouse X") * sensitivity;

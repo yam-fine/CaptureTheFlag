@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling.Memory.Experimental;
 using Utils;
+using Unity.Netcode;
 
-public class GeneralPlayer : MonoBehaviour
+public class GeneralPlayer : NetworkBehaviour
 {
     protected Flag flag;
     private GameObject flagPos;
     protected bool holdingFlag;
+    GameObject goal;
     private GameMenuManager.Side scoreSide;
     public GameMenuManager.Side ScoreSide
     {
@@ -18,7 +20,7 @@ public class GeneralPlayer : MonoBehaviour
     }
 
     protected Vector3 startPos;
-    [SerializeField] private GameObject goal;
+    //[SerializeField] private GameObject goal;
     [SerializeField] private AudioSource goalAudio;
 
     public GameObject Goal
@@ -45,7 +47,10 @@ public class GeneralPlayer : MonoBehaviour
     protected virtual void Start() {
         flag = GameManager.Instance.Flag.GetComponent<Flag>();
         flagPos = UtilFunctions.SearchForObjectInHierarchy(transform, "FlagPos");
-
+        if (IsHost)
+            goal = GameManager.Instance.goalOwner;
+        else
+            goal = GameManager.Instance.goalClient;
     }
 
     private void OnTriggerEnter(Collider other) {
