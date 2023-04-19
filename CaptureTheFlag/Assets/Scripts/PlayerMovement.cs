@@ -41,6 +41,7 @@ public class PlayerMovement : NetworkBehaviour {
 
     private void Start() {
         CinemachineCameraController cam = FindObjectOfType<CinemachineCameraController>();
+        //cam.transform.position = transform.forward * -10;
         cam.target = cameraTarget;
         cameraForward = Camera.main.transform.forward;
         controller = GetComponent<CharacterController>();

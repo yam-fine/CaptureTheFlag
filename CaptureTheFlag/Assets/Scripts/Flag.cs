@@ -13,6 +13,7 @@ public class Flag : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.Flag = gameObject;
         col = GetComponent<BoxCollider>();
     }
 
