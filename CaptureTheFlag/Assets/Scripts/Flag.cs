@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Flag : MonoBehaviour
+public class Flag : NetworkBehaviour
 {
     [SerializeField] Transform initPos;
     bool pickedUp = false;
@@ -17,13 +18,19 @@ public class Flag : MonoBehaviour
         col = GetComponent<BoxCollider>();
     }
 
-    public void CaptureFlag(Transform flagPos) {
-        
-        pickedUp = true;
-        col.enabled = false;
-        transform.parent = flagPos;
-        transform.position = flagPos.position;
-        transform.rotation = flagPos.rotation;
+    [ServerRpc]
+    public void CaptureFlagServerRpc(ulong player) {
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(player, out var playerObj);
+        if (playerObj == null || playerObj.transform.parent != null) return; // object already picked up, server authority says no
+
+        if (this.TryGetComponent(out NetworkObject networkObject) && networkObject.TrySetParent(playerObj)) {
+            Transform parent = playerObj.GetComponent<ControlledPlayer>().flagPos.GetComponent<Transform>();
+            pickedUp = true;
+            col.enabled = false;
+            transform.parent = parent;
+            transform.position = parent.position;
+            transform.rotation = parent.rotation;
+        }
     }
 
     public void Goal() {

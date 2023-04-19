@@ -9,7 +9,7 @@ using Unity.Netcode;
 public class GeneralPlayer : NetworkBehaviour
 {
     protected Flag flag;
-    private GameObject flagPos;
+    [HideInInspector] public GameObject flagPos;
     protected bool holdingFlag;
     GameObject goal;
     private GameMenuManager.Side scoreSide;
@@ -77,7 +77,7 @@ public class GeneralPlayer : NetworkBehaviour
     protected virtual void CaptureFlag()
     {
             holdingFlag = true;
-            flag.CaptureFlag(flagPos.transform);
+            flag.CaptureFlagServerRpc(NetworkObjectId);
     }
 
     public virtual void ScoreFlag()
