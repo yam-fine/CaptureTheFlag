@@ -37,7 +37,6 @@ public class GeneralPlayer : NetworkBehaviour
 
     protected float invincibilityTime = 1f;
     private bool invincible = false;
-    private bool canPickup = true;
 
     protected virtual void Awake()
     {
@@ -76,7 +75,10 @@ public class GeneralPlayer : NetworkBehaviour
 
     protected virtual void CaptureFlag()
     {
-            holdingFlag = true;
+        holdingFlag = true;
+        if (IsHost)
+            flag.CaptureFlagClientRpc(NetworkObjectId);
+        else
             flag.CaptureFlagServerRpc(NetworkObjectId);
     }
 

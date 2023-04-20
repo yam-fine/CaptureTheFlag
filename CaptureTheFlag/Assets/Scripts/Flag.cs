@@ -18,8 +18,26 @@ public class Flag : NetworkBehaviour
         col = GetComponent<BoxCollider>();
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void CaptureFlagServerRpc(ulong player) {
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(player, out var playerObj);
+        if (playerObj == null || playerObj.transform.parent != null) { // object already picked up, server authority says no
+            print("HELLO");
+            return;
+        }
+
+        if (TryGetComponent(out NetworkObject networkObject) && networkObject.TrySetParent(playerObj)) {
+            Transform parent = playerObj.GetComponent<ControlledPlayer>().flagPos.GetComponent<Transform>();
+            pickedUp = true;
+            col.enabled = false;
+            transform.parent = parent;
+            transform.position = parent.position;
+            transform.rotation = parent.rotation;
+        }
+    }
+
+    [ClientRpc]
+    public void CaptureFlagClientRpc(ulong player) {
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(player, out var playerObj);
         if (playerObj == null || playerObj.transform.parent != null) return; // object already picked up, server authority says no
 
