@@ -29,5 +29,7 @@ public class GameMenuManager : Singleton<GameMenuManager>
       text.text = newScore.ToString();
    }
    
-  
+  public void UpdateText(string lol) {
+        leftText.text = lol;
+    }
 }

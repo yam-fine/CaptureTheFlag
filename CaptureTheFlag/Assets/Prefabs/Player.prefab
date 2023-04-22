@@ -130,11 +130,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfd6696706fdc2d458e3741fac14442f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flagPos: {fileID: 0}
   goalAudio: {fileID: 7003978303128542675}
-  globalFlag: {fileID: 1138646315775880733, guid: a967b55df3cfeb74b930121e476249e9, type: 3}
   cc: {fileID: 616191855677210672}
   pm: {fileID: 616191855677210685}
   pi: {fileID: 616191855677210684}
+  bc: {fileID: 616191855677210686}
 --- !u!114 &1028219661
 MonoBehaviour:
   m_ObjectHideFlags: 0

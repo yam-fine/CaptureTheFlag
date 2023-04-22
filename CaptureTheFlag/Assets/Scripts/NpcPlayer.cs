@@ -27,14 +27,14 @@ public class NpcPlayer : GeneralPlayer
 
     protected override IEnumerator Invincibility()
     {
-        Invincible = true;
+        invincible = true;
         NPCMovement.MovementType initialMovementType = movement.movementType;
         movement.Target = GameManager.Instance.controlledPlayer.gameObject;
         movement.Speed = _runToPlayerSpeed;
         movement.movementType = NPCMovement.MovementType.noMove;
         yield return new WaitForSeconds(invincibilityTime);
         movement.movementType = initialMovementType;
-        Invincible = false;
+        invincible = false;
     }
 
     public override void ScoreFlag()

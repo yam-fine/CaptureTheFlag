@@ -14,7 +14,7 @@ public class PlayerMovement : NetworkBehaviour {
     [SerializeField] private float rotationSpeed;
     private CharacterController controller;
     private Vector3 velocity;
-    private Vector2 movementInput;
+    //private Vector2 movementInput;
     //private Vector3 movementDirection;
     static PlayerMovement instance;
     Animator anim;
@@ -22,6 +22,7 @@ public class PlayerMovement : NetworkBehaviour {
     private int isFallingdCounter = 0; // it is always alternating between true and false, if there is 3 in a row we can conclude its falling.
     private Vector3 lastSeenPos;
     Vector3 cameraForward;
+    bool canMove = true;
 
     public static PlayerMovement Instance { get {
             if (instance == null) instance = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
@@ -41,11 +42,11 @@ public class PlayerMovement : NetworkBehaviour {
 
     private void Start() {
         CinemachineCameraController cam = FindObjectOfType<CinemachineCameraController>();
-        /*if (IsClient) {
+        if (IsClient) {
             Vector3 tmp = cam.transform.position;
             cam.transform.position = new Vector3(tmp.x, tmp.y, transform.position.z + 10);
             cam.transform.forward = transform.forward;
-        }*/
+        }
         cam.target = cameraTarget;
         cameraForward = Camera.main.transform.forward;
         controller = GetComponent<CharacterController>();
@@ -53,13 +54,15 @@ public class PlayerMovement : NetworkBehaviour {
         _input = GetComponent<CaptureTheFlag.CaptureTheFlagInputs>();
     }
 
-    /*private void OnEnable() {
-        controls.Enable();
+    private void Enable() {
+        //controls.Enable();
+        canMove = true;
     }
 
-    private void OnDisable() {
-        controls.Disable();
-    }*/
+    private void Disable() {
+        //controls.Disable();
+        canMove = false;
+    }
 
     private void Update() {
         if (controller.isGrounded)
@@ -77,7 +80,9 @@ public class PlayerMovement : NetworkBehaviour {
             transform.position = lastSeenPos;
             isFallingdCounter = 0;
         }
-        Move();
+
+        //if (canMove)
+            Move();
     }
 
     private void Move() {
@@ -87,7 +92,7 @@ public class PlayerMovement : NetworkBehaviour {
 
         // Calculate the movement direction based on player input and camera direction
         Vector3 moveDirection = (cameraForward * _input.move.y + Camera.main.transform.right * _input.move.x).normalized;
-        print(_input.move);
+        //print(_input.move);
         // Rotate the character towards the movement direction
         if (moveDirection.magnitude > 0.1f) {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
@@ -116,7 +121,7 @@ public class PlayerMovement : NetworkBehaviour {
 
     public void EnableControls(bool enable)
     {
-        //(enable ? (Action)controls.Enable : (Action)controls.Disable)();
-        Debug.LogError("Bruh");
+        (enable ? (Action)Enable : (Action)Disable)();
+        //Debug.LogError("Bruh");
     }
 }

@@ -10,7 +10,7 @@ public class ControlledPlayer : GeneralPlayer
     [SerializeField] CharacterController cc;
     [SerializeField] PlayerMovement pm;
     [SerializeField] PlayerInput pi;
-
+    [SerializeField] BoxCollider bc;
     private PlayerMovement movement;
 
     protected override void Awake()
@@ -22,13 +22,15 @@ public class ControlledPlayer : GeneralPlayer
 
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
-        if (!IsOwner) return;
+        if (!IsOwner) {
+            bc.isTrigger = true;
+            gameObject.AddComponent<Rigidbody>();
+            return;
+        }
+        StartPos();
 
         cc.enabled = true;
-        pm.enabled = true;
         pi.enabled = true;
-
-        StartPos();
     }
 
     void StartPos() {
@@ -38,14 +40,17 @@ public class ControlledPlayer : GeneralPlayer
         else
             spawnPos = GameObject.Find("ClientSpawnPos").transform;
         transform.position = spawnPos.position;
+        transform.rotation = spawnPos.rotation;
+        pm.enabled = true;
     }
 
+
     protected override IEnumerator Invincibility() {
-        Invincible = true;
-        movement.EnableControls(false);
+        invincible = true;
+        if (IsOwner) movement.EnableControls(false);
         yield return new WaitForSeconds(invincibilityTime);
-        movement.EnableControls(true);
-        Invincible = false;
+        if (IsOwner) movement.EnableControls(true);
+        invincible = false;
     }
 
     public override void ScoreFlag() {

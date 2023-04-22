@@ -10,7 +10,6 @@ public class GeneralPlayer : NetworkBehaviour
 {
     protected Flag flag;
     [HideInInspector] public GameObject flagPos;
-    protected bool holdingFlag;
     GameObject goal;
     private GameMenuManager.Side scoreSide;
     public GameMenuManager.Side ScoreSide
@@ -28,15 +27,17 @@ public class GeneralPlayer : NetworkBehaviour
         get { return goal; }
     }
 
-    public bool HoldingFlag
+    /*public bool HoldingFlag
     {
-        get { return holdingFlag; }
-    }
+        get { return flag.; }
+    }*/
 
-    protected bool Invincible { get => invincible; set => invincible = value; }
+    //protected bool Invincible { get => invincible; set => invincible = value; }
+    //protected NetworkVariable<bool> Invincible { get {  invincible; } set => invincible = value; }
 
     protected float invincibilityTime = 1f;
-    private bool invincible = false;
+    protected bool invincible = false;
+    private bool holdingFlag = false;
 
     protected virtual void Awake()
     {
@@ -55,17 +56,30 @@ public class GeneralPlayer : NetworkBehaviour
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Flag")) {
             CaptureFlag();
+            return;
         }
+        //GameMenuManager.Instance.UpdateText($"{flag.hostHoldingFlag},{invincible.Value},{flag.PickedUp},{other.GetComponent<GeneralPlayer>().invincible.Value}");
+
         if (other.gameObject.CompareTag("Player")) {
-            if (!holdingFlag && !Invincible && flag.PickedUp) { // the other player has the flag
-                Debug.Log(gameObject.name + " is taking the flag");
-                CaptureFlag();
+
+            if (!holdingFlag && !invincible && flag.PickedUp) { // the other player has the flag
+                //GameMenuManager.Instance.UpdateText(gameObject.name + " is taking the flag");
+                if (IsOwner) {
+                    Debug.Log(gameObject.name + " is taking the flag");
+                    CaptureFlag();
+                }
             }
-            else if (holdingFlag && !other.GetComponent<GeneralPlayer>().Invincible) { // we have the flag
-                holdingFlag = false;
-                StartCoroutine(Invincibility());
+            else if (holdingFlag && !other.GetComponent<GeneralPlayer>().invincible) { // we have the flag
+                if (IsOwner) {
+                    StartCoroutine(Invincibility());
+                    holdingFlag = false;
+                }
+
+                    /*flag.transform.parent = other.transform;
+                    flag.transform.position = flagPos.transform.position;
+                    flag.transform.rotation = flagPos.transform.rotation;*/
+                }
             }
-        }
     }
     
     protected virtual IEnumerator Invincibility()
@@ -75,6 +89,8 @@ public class GeneralPlayer : NetworkBehaviour
 
     protected virtual void CaptureFlag()
     {
+        //flag.CaptureFlag(GetComponent<ControlledPlayer>(), flagPos.transform);
+        /*if (IsHost) flag.hostHoldingFlag.Value = true;*/
         holdingFlag = true;
         if (IsHost)
             flag.CaptureFlagClientRpc(NetworkObjectId);
