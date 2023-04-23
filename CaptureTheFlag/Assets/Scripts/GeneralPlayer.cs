@@ -32,15 +32,18 @@ public class GeneralPlayer : NetworkBehaviour
         get { return flag.; }
     }*/
 
-    //protected bool Invincible { get => invincible; set => invincible = value; }
-    //protected NetworkVariable<bool> Invincible { get {  invincible; } set => invincible = value; }
-
     protected float invincibilityTime = 1f;
     protected bool invincible = false;
-    private bool holdingFlag = false;
+    [HideInInspector] public bool holdingFlag = false;
+    //protected NetworkVariable<bool> invincible = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    //private NetworkVariable<bool> holdingFlag = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    protected virtual void Awake()
+    /*protected virtual void OnNetworkStart()
     {
+        startPos = transform.position;
+    }*/
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
         startPos = transform.position;
     }
 
@@ -53,49 +56,70 @@ public class GeneralPlayer : NetworkBehaviour
             goal = GameManager.Instance.goalClient;
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Flag")) {
+    private void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Player") && IsHost && IsOwner) {
+            Debug.Log("hello " + NetworkObjectId.ToString());
+            ChangeItServerRpc();
+        }
+        
+        
+        /*if (other.CompareTag("Flag")) {
+            if (!IsHost) flag.InitPickupServerRpc();
+            else flag.InitPickupClientRpc();
             CaptureFlag();
             return;
         }
         //GameMenuManager.Instance.UpdateText($"{flag.hostHoldingFlag},{invincible.Value},{flag.PickedUp},{other.GetComponent<GeneralPlayer>().invincible.Value}");
 
         if (other.gameObject.CompareTag("Player")) {
-
             if (!holdingFlag && !invincible && flag.PickedUp) { // the other player has the flag
-                //GameMenuManager.Instance.UpdateText(gameObject.name + " is taking the flag");
+                GameMenuManager.Instance.UpdateText(gameObject.name + " is taking the flag");
                 if (IsOwner) {
-                    Debug.Log(gameObject.name + " is taking the flag");
-                    CaptureFlag();
+                    CaptureFlag(other);
+                    StartCoroutine(other.GetComponent<ControlledPlayer>().Invincibility());
                 }
             }
-            else if (holdingFlag && !other.GetComponent<GeneralPlayer>().invincible) { // we have the flag
+            *//*else if (holdingFlag.Value && !other.GetComponent<GeneralPlayer>().invincible.Value) { // we have the flag
                 if (IsOwner) {
+                    Debug.Log(gameObject.name + " is invincible");
                     StartCoroutine(Invincibility());
-                    holdingFlag = false;
+                    holdingFlag.Value = false;
                 }
 
-                    /*flag.transform.parent = other.transform;
+                    *//*flag.transform.parent = other.transform;
                     flag.transform.position = flagPos.transform.position;
-                    flag.transform.rotation = flagPos.transform.rotation;*/
-                }
-            }
+                    flag.transform.rotation = flagPos.transform.rotation;*//*
+                }*//*
+            }*/
     }
-    
+
+    [ServerRpc(RequireOwnership =false)]
+    void ChangeItServerRpc() {
+        GameManager.Instance.HostIsIt = !GameManager.Instance.HostIsIt;
+        ChangeItClientRpc();
+    }
+
+    [ClientRpc]
+    void ChangeItClientRpc() {
+        if (IsHost) return;
+        GameManager.Instance.HostIsIt = !GameManager.Instance.HostIsIt;
+    }
+
+
     protected virtual IEnumerator Invincibility()
     {
         throw new Exception("Override this function");
     }
 
-    protected virtual void CaptureFlag()
+    protected virtual void CaptureFlag(Collider other=null)
     {
         //flag.CaptureFlag(GetComponent<ControlledPlayer>(), flagPos.transform);
         /*if (IsHost) flag.hostHoldingFlag.Value = true;*/
-        holdingFlag = true;
-        if (IsHost)
-            flag.CaptureFlagClientRpc(NetworkObjectId);
+        flag.CaptureFlagServerRpc(NetworkObjectId);
+        /*if (IsHost)
+            flag.CaptureFlagClientRpc(NetworkObjectId, true);
         else
-            flag.CaptureFlagServerRpc(NetworkObjectId);
+            flag.CaptureFlagServerRpc(NetworkObjectId);*/
     }
 
     public virtual void ScoreFlag()

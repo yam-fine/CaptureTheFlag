@@ -6,12 +6,18 @@ using Unity.Netcode;
 public class Flag : NetworkBehaviour
 {
     [SerializeField] Transform initPos;
-    private NetworkVariable<bool> pickedUp = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    //public NetworkVariable<bool> hostHoldingFlag = new NetworkVariable<bool>(false);
+
+    public enum FlagState {
+        HELD_BY_CLIENT,
+        HELD_BY_SERVER
+    }
+
+    private bool pickedUp = false;
+    public NetworkVariable<FlagState> flagState = new NetworkVariable<FlagState>();
 
     BoxCollider col;
 
-    public bool PickedUp { get => pickedUp.Value;}
+    public bool PickedUp { get => pickedUp; set => pickedUp = value; }
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +35,20 @@ public class Flag : NetworkBehaviour
     //}
 
     [ServerRpc(RequireOwnership = false)]
+    public void InitPickupServerRpc() {
+        PickedUp = true;
+        col.enabled = false;
+        InitPickupClientRpc();
+    }
+
+    [ClientRpc]
+    public void InitPickupClientRpc() {
+        if (IsHost) return;
+        col.enabled = false;
+        PickedUp = true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     public void CaptureFlagServerRpc(ulong player) {
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(player, out var playerObj);
         /*if (playerObj == null || playerObj.transform.parent != null) { // object already picked up, server authority says no
@@ -40,9 +60,12 @@ public class Flag : NetworkBehaviour
             ControlledPlayer cc = playerObj.GetComponent<ControlledPlayer>();
             Transform parent = cc.flagPos.transform;
             //GetComponent<NetworkObject>().ChangeOwnership(player);
-            pickedUp.Value = true;
-            col.enabled = false;
-            transform.parent = cc.transform;
+        transform.parent = cc.transform;
+        if (NetworkManager.Singleton.LocalClientId == NetworkManager.ServerClientId) {
+            cc.holdingFlag = true;
+
+        }
+        //other.
             /*transform.position = parent.position;
             transform.rotation = parent.rotation;*/
             CaptureFlagClientRpc(player);
@@ -50,17 +73,20 @@ public class Flag : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void CaptureFlagClientRpc(ulong player) {
-        if (IsHost) return;
+    public void CaptureFlagClientRpc(ulong player, bool fromHost=false) {
+        if (!fromHost && IsHost) return;
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(player, out var playerObj);
         //if (playerObj == null || playerObj.transform.parent != null) return; // object already picked up, server authority says no
 
         //if (this.TryGetComponent(out NetworkObject networkObject) && networkObject.TrySetParent(playerObj)) {
-            ControlledPlayer cc = playerObj.GetComponent<ControlledPlayer>();
-            Transform parent = cc.flagPos.transform;
-            pickedUp.Value = true;
-            col.enabled = false;
-            transform.parent = cc.transform;
+        foreach (var obj in NetworkManager.Singleton.ConnectedClientsList) {
+            if (obj.PlayerObject.NetworkObjectId != player) {
+
+            }
+        }
+        ControlledPlayer cc = playerObj.GetComponent<ControlledPlayer>();
+        Transform parent = cc.flagPos.transform;
+        //transform.parent = cc.transform;
             /*transform.position = parent.position;
             transform.rotation = parent.rotation;*/
         //}
@@ -72,7 +98,7 @@ public class Flag : NetworkBehaviour
     }*/
 
     public void Goal() {
-        pickedUp.Value = false;
+        pickedUp = false;
         transform.parent = null;
         transform.position = initPos.position;
         transform.rotation = initPos.rotation;

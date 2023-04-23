@@ -18,12 +18,12 @@ public class NpcPlayer : GeneralPlayer
 
     }
 
-    protected override void CaptureFlag()
+    /*protected override void CaptureFlag()
     {
         base.CaptureFlag();
         movement.Target = Goal;
         movement.Speed = _runToGoalSpeed;
-    }
+    }*/
 
     protected override IEnumerator Invincibility()
     {
