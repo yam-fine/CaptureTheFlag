@@ -87,6 +87,7 @@ public class PlayerMovement : NetworkBehaviour {
 
     private void Move() {
         // Get the camera's forward vector and flatten it on the XZ plane
+        cameraForward = Camera.main.transform.forward;
         cameraForward.y = 0f;
         cameraForward = cameraForward.normalized;
 

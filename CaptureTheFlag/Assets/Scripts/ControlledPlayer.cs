@@ -13,19 +13,22 @@ public class ControlledPlayer : GeneralPlayer
     [SerializeField] BoxCollider bc;
     private PlayerMovement movement;
 
-    protected override void Awake()
+/*    protected override void Awake()
     {
         base.Awake();
-        movement = GetComponent<PlayerMovement>();
-        ScoreSide = GameMenuManager.Side.Right;
     }
-
+*/
     public override void OnNetworkSpawn() {
         base.OnNetworkSpawn();
+        movement = GetComponent<PlayerMovement>();
+        ScoreSide = GameMenuManager.Side.Right;
         if (!IsOwner) {
             bc.isTrigger = true;
             gameObject.AddComponent<Rigidbody>();
             return;
+        }
+        else {
+            bc.enabled = false;
         }
         StartPos();
 
